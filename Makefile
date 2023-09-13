@@ -1,4 +1,7 @@
-OBJECTS = loader.o
+OBJECTS = loader.o kmain.o
+CC = gcc
+CFLAGS = -m32 -nostdlib -nostdinc -fno-builtin -fno-stack-protector \
+		 -nostartfiles -nodefaultlibs -Wall -Wextra -Werror -c
 LDFFLAGS = -T link.ld -melf_i386
 AS = nasm
 ASFLAGS = -f elf -Fdwarf -g
@@ -6,7 +9,6 @@ ASFLAGS = -f elf -Fdwarf -g
 all: affinity.iso
 
 affinity.iso: kernel.elf
-	echo Generating $<…
 	mkdir -p iso/boot/grub
 	cp kernel.elf iso/boot/
 	genisoimage -R                           \
@@ -21,9 +23,11 @@ affinity.iso: kernel.elf
                 iso
 
 kernel.elf: $(OBJECTS)
-	echo Linking $<…
 	mkdir -p iso/boot
 	ld $(LDFFLAGS) $(OBJECTS) -o kernel.elf
+
+%.o: %.c
+	$(CC) $(CFLAGS) $< -o $@
 
 %.o: %.s
 	$(AS) $(ASFLAGS) $< -o $@
