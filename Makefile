@@ -33,4 +33,4 @@ kernel.elf: $(OBJECTS)
 	$(AS) $(ASFLAGS) $< -o $@
 
 clean:
-	rm -fr *.o iso/boot/kernel affinity.iso
+	rm -fr *.o iso/boot/kernel.elf affinity.iso
